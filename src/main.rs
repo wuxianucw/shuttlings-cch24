@@ -1,4 +1,12 @@
-use axum::{body::Body, http::{header::LOCATION, StatusCode}, response::Response, routing::get, Router};
+mod c2;
+
+use axum::{
+    body::Body,
+    http::{header::LOCATION, StatusCode},
+    response::Response,
+    routing::get,
+    Router,
+};
 
 async fn hello_bird() -> &'static str {
     "Hello, bird!"
@@ -16,7 +24,8 @@ async fn seek() -> Response {
 async fn main() -> shuttle_axum::ShuttleAxum {
     let router = Router::new()
         .route("/", get(hello_bird))
-        .route("/-1/seek", get(seek));
+        .route("/-1/seek", get(seek))
+        .nest("/2", c2::router());
 
     Ok(router.into())
 }
