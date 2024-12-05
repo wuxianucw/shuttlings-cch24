@@ -59,7 +59,7 @@ async fn v6_key(Query(param): Query<KeyParam<Ipv6Addr>>) -> String {
             .octets()
             .into_iter()
             .zip(param.to.octets().into_iter())
-            .map(|(from, key)| from ^ key)
+            .map(|(from, to)| from ^ to)
             .fold(0u128, |acc, x| (acc << 8) | (x as u128)),
     )
     .to_string()
