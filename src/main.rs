@@ -1,4 +1,5 @@
 mod c2;
+mod c5;
 
 use axum::{
     body::Body,
@@ -25,7 +26,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
     let router = Router::new()
         .route("/", get(hello_bird))
         .route("/-1/seek", get(seek))
-        .nest("/2", c2::router());
+        .nest("/2", c2::router())
+        .nest("/5", c5::router());
 
     Ok(router.into())
 }
