@@ -20,7 +20,7 @@ async fn manifest(
     let content_type = headers.get(CONTENT_TYPE).and_then(|v| v.to_str().ok());
     let manifest = match content_type {
         Some("application/toml") => toml::from_str::<Manifest>(&body).ok(),
-        Some("application/yaml") => serde_yml::from_str(&body).ok(),
+        Some("application/yaml") => serde_yaml::from_str(&body).ok(),
         Some("application/json") => serde_json::from_str(&body).ok(),
         _ => Err((StatusCode::UNSUPPORTED_MEDIA_TYPE, ""))?,
     }
