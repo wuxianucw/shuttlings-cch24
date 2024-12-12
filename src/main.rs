@@ -1,6 +1,7 @@
 mod c2;
 mod c5;
 mod c9;
+mod c12;
 
 use axum::{
     body::Body,
@@ -29,7 +30,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/-1/seek", get(seek))
         .nest("/2", c2::router())
         .nest("/5", c5::router())
-        .nest("/9", c9::router());
+        .nest("/9", c9::router())
+        .nest("/12", c12::router());
 
     Ok(router.into())
 }
