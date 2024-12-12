@@ -1,18 +1,20 @@
-use std::sync::Arc;
-
-use axum::{extract::{Path, State}, http::StatusCode, routing::{get, post}, Router};
-use itertools::Itertools;
-use rand::{rngs::StdRng, Rng, SeedableRng};
-use serde::Deserialize;
-use tokio::sync::RwLock;
-
-
 /// |0,3|1,3|2,3|3,3|
 /// |0,2|1,2|2,2|3,2|
 /// |0,1|1,1|2,1|3,1|
 /// |0,0|1,0|2,0|3,0|
 /// +---+---+---+---+
+use std::sync::Arc;
 
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    routing::{get, post},
+    Router,
+};
+use itertools::Itertools;
+use rand::{rngs::StdRng, Rng, SeedableRng};
+use serde::Deserialize;
+use tokio::sync::RwLock;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -57,24 +59,21 @@ impl GameState {
             Self::Normal => "",
             Self::Wins(Item::Cookie) => "🍪 wins!\n",
             Self::Wins(Item::Milk) => "🥛 wins!\n",
-            Self::NoWinner => "No winner.\n"
+            Self::NoWinner => "No winner.\n",
         }
     }
 }
 
 impl AppState {
-
     const WINNING_COORDS_NT: [[(usize, usize); 4]; 10] = [
         [(0, 0), (0, 1), (0, 2), (0, 3)],
         [(1, 0), (1, 1), (1, 2), (1, 3)],
         [(2, 0), (2, 1), (2, 2), (2, 3)],
         [(3, 0), (3, 1), (3, 2), (3, 3)],
-
         [(0, 0), (1, 0), (2, 0), (3, 0)],
         [(0, 1), (1, 1), (2, 1), (3, 1)],
         [(0, 2), (1, 2), (2, 2), (3, 2)],
         [(0, 3), (1, 3), (2, 3), (3, 3)],
-
         [(0, 0), (1, 1), (2, 2), (3, 3)],
         [(0, 3), (1, 2), (2, 1), (3, 0)],
     ];
@@ -155,7 +154,14 @@ impl AppState {
         self.reset();
         for _ in 0..4 {
             for i in 0..4 {
-                self.slots[i].insert(0, if self.rng.gen::<bool>() { Item::Cookie } else { Item::Milk });
+                self.slots[i].insert(
+                    0,
+                    if self.rng.gen::<bool>() {
+                        Item::Cookie
+                    } else {
+                        Item::Milk
+                    },
+                );
             }
         }
         self.update_game_state();
@@ -184,7 +190,14 @@ async fn place(
     }
     let place_succeed = state.place(item, position - 1);
     let state = state.downgrade();
-    Ok((if place_succeed { StatusCode::OK } else { StatusCode::SERVICE_UNAVAILABLE }, state.get_display_string()))
+    Ok((
+        if place_succeed {
+            StatusCode::OK
+        } else {
+            StatusCode::SERVICE_UNAVAILABLE
+        },
+        state.get_display_string(),
+    ))
 }
 
 async fn random_board(State(state): State<Arc<RwLock<AppState>>>) -> String {
