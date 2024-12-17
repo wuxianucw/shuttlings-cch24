@@ -1,4 +1,5 @@
 mod c12;
+mod c16;
 mod c2;
 mod c5;
 mod c9;
@@ -31,7 +32,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .nest("/2", c2::router())
         .nest("/5", c5::router())
         .nest("/9", c9::router())
-        .nest("/12", c12::router());
+        .nest("/12", c12::router())
+        .nest("/16", c16::router());
 
     Ok(router.into())
 }
